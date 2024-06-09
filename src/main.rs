@@ -130,13 +130,22 @@ fn main() {
     println!("a = {:?}", a);
     println!("btree =\n{:?}", &sabtree.btree);
 
-    let p = "quick}";
-    let p0 = "quick";
-    let upper_bound = sabtree.search_fast(&p, &s);
-    let r = sabtree.get_offset(upper_bound.k, upper_bound.i);
-    let r = sabtree.btree[[r, sabtree.block_size - 1]];
+    let p = "i}";
+    let p0 = "i";
+
     let lower_bound = sabtree.search_fast(&p0, &s);
     let r2 = lower_bound.r;
+    println!("{}", &s[r2 as usize..]);
+
+    let upper_bound = sabtree.search_fast(&p, &s);
+    let r = if upper_bound.k != lower_bound.k {
+        println!("lower = {:?}, upper = {:?}", lower_bound, upper_bound);
+        //upper_bound.r - 1
+        //let t = sabtree.get_offset(upper_bound.k, upper_bound.i);
+        sabtree.btree[[upper_bound.k, upper_bound.i - 1]]
+    } else {
+        upper_bound.r
+    };
 
     println!("lb = {:?}, ub = {:?}", lower_bound, upper_bound);
 
@@ -144,6 +153,7 @@ fn main() {
     println!("{}", &s[r as usize..]);
     println!("{}", &s[r2 as usize..]);
 
+    /*
     for k in 0..sabtree.nblocks {
         for i in 0..sabtree.block_size {
             let child = sabtree.get_offset(k, i);
@@ -161,6 +171,7 @@ fn main() {
             }
         }
     }
+    */
 
     let w = [2, 3, 4, 6];
     let z = [2, 3, 5, 6];
